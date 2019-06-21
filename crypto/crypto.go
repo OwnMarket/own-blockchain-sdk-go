@@ -184,7 +184,7 @@ func SignPlainText(privateKey string, text []byte) string {
 
 func VerifyPlainTextSignature(signature string, text []byte) string {
 	dataToVerify := xsha256(text)
-	signatureBytes := decode58(signature)
+	signatureBytes := Decode58(signature)
 	publicKey, err := secp256k1.RecoverPubkey(dataToVerify[:], signatureBytes)
 	if err != nil {
 		fmt.Println(err.Error())
