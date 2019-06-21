@@ -31,7 +31,7 @@ type WalletInfo struct {
 // Encryption
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-func encrypt(text []byte, passwordHash [32]byte) []byte {
+func Encrypt(text []byte, passwordHash [32]byte) []byte {
 	cypher, err := aes.NewCipher(passwordHash[:])
 	if err != nil {
 		fmt.Println(err)
@@ -52,7 +52,7 @@ func encrypt(text []byte, passwordHash [32]byte) []byte {
 	return gcm.Seal(nonce, nonce, text, nil)
 }
 
-func decrypt(encryptedText []byte, passwordHash [32]byte) []byte {
+func Decrypt(encryptedText []byte, passwordHash [32]byte) []byte {
 	cypher, err := aes.NewCipher(passwordHash[:])
 	if err != nil {
 		fmt.Println(err)
@@ -80,11 +80,11 @@ func decrypt(encryptedText []byte, passwordHash [32]byte) []byte {
 // Encoding
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-func encode58(src []byte) string {
+func Encode58(src []byte) string {
 	return base58.Encode(src)
 }
 
-func decode58(src string) []byte {
+func Decode58(src string) []byte {
 	decoded, err := base58.Decode(src)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -109,7 +109,7 @@ func xsha160(data []byte) []byte {
 	return _sha512[:20]
 }
 
-func hash(data []byte) string {
+func Hash(data []byte) string {
 	_sha256 := xsha256(data)
 	return encode58(_sha256[:])
 }
@@ -129,7 +129,7 @@ func blockchainAddress(publicKey []byte) string {
 // Signing
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-func generateWallet() *WalletInfo {
+func GenerateWallet() *WalletInfo {
 	key, err := ecdsa.GenerateKey(secp256k1.S256(), rand.Reader)
 	if err != nil {
 		panic(err)
@@ -148,7 +148,7 @@ func generateWallet() *WalletInfo {
 	return wallet
 }
 
-func addressFromPrivateKey(privateKey string) string {
+func AddressFromPrivateKey(privateKey string) string {
 	bytes := decode58(privateKey)
 	key, err := crypto.ToECDSA(bytes)
 	if err != nil {
@@ -170,19 +170,19 @@ func sign(privateKey string, dataHash [32]byte) string {
 	return encode58(signatureBytes)
 }
 
-func signMessage(networkCode []byte, privateKey string, message []byte) string {
+func SignMessage(networkCode []byte, privateKey string, message []byte) string {
 	messageHash := xsha256(message)
 	networkIdBytes := xsha256(networkCode)
 	dataToSign := xsha256(append(messageHash[:], networkIdBytes[:]...))
 	return sign(privateKey, dataToSign)
 }
 
-func signPlainText(privateKey string, text []byte) string {
+func SignPlainText(privateKey string, text []byte) string {
 	dataToSign := xsha256(text)
 	return sign(privateKey, dataToSign)
 }
 
-func verifyPlainTextSignature(signature string, text []byte) string {
+func VerifyPlainTextSignature(signature string, text []byte) string {
 	dataToVerify := xsha256(text)
 	signatureBytes := decode58(signature)
 	publicKey, err := secp256k1.RecoverPubkey(dataToVerify[:], signatureBytes)
@@ -197,20 +197,20 @@ func verifyPlainTextSignature(signature string, text []byte) string {
 // Hierarchical Deterministic Cryptography
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-func generateMnemonic() string {
+func GenerateMnemonic() string {
 	entropy, _ := bip39.NewEntropy(256)
 	mnemonic, _ := bip39.NewMnemonic(entropy)
 	return mnemonic
 }
 
-func generateSeedFromMnemonic(mnemonic string, passphrase string) []byte {
+func GenerateSeedFromMnemonic(mnemonic string, passphrase string) []byte {
 	if !bip39.IsMnemonicValid(mnemonic) {
 		panic("Invalid mnemonic")
 	}
 	return bip39.NewSeed(mnemonic, passphrase)
 }
 
-func generateSeedFromKeystore(keyStoreEncrypted []byte, passwordHash [32]byte) []byte {
+func GenerateSeedFromKeystore(keyStoreEncrypted []byte, passwordHash [32]byte) []byte {
 	return decrypt(keyStoreEncrypted, passwordHash)
 }
 
@@ -219,7 +219,7 @@ func generateMasterKeyFromSeed(seed []byte) *bip32.Key {
 	return masterKey
 }
 
-func generateKeystore(mnemonic string, passwordHash [32]byte) []byte {
+func GenerateKeystore(mnemonic string, passwordHash [32]byte) []byte {
 	seed := generateSeedFromMnemonic(mnemonic, "")
 	return encrypt(seed, passwordHash)
 }
@@ -273,11 +273,11 @@ func generateWalletFromSeedWithExplicitCoinIndex(seed []byte, coin uint32, keyIn
 	return wallet
 }
 
-func generateWalletFromSeed(seed []byte, keyIndex uint32) *WalletInfo {
+func GenerateWalletFromSeed(seed []byte, keyIndex uint32) *WalletInfo {
 	return generateWalletFromSeedWithExplicitCoinIndex(seed, 25718, keyIndex)
 }
 
-func restoreWalletsFromSeed(seed []byte, walletCount uint32) [](*WalletInfo) {
+func RestoreWalletsFromSeed(seed []byte, walletCount uint32) [](*WalletInfo) {
 	var wallets [](*WalletInfo)
 	var i uint32 = 0
 	for ; i < walletCount; i++ {
@@ -287,12 +287,12 @@ func restoreWalletsFromSeed(seed []byte, walletCount uint32) [](*WalletInfo) {
 	return wallets
 }
 
-func generateWalletFromKeystore(keyStoreEncrypted []byte, passwordHash [32]byte, keyIndex uint32) *WalletInfo {
+func GenerateWalletFromKeystore(keyStoreEncrypted []byte, passwordHash [32]byte, keyIndex uint32) *WalletInfo {
 	seed := generateSeedFromKeystore(keyStoreEncrypted, passwordHash)
 	return generateWalletFromSeed(seed, keyIndex)
 }
 
-func restoreWalletsFromKeystore(keyStoreEncrypted []byte, passwordHash [32]byte, walletCount uint32) [](*WalletInfo) {
+func RestoreWalletsFromKeystore(keyStoreEncrypted []byte, passwordHash [32]byte, walletCount uint32) [](*WalletInfo) {
 	seed := generateSeedFromKeystore(keyStoreEncrypted, passwordHash)
 	return restoreWalletsFromSeed(seed, walletCount)
 }
