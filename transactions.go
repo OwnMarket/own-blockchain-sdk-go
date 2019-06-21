@@ -1,4 +1,4 @@
-package ownSdk
+package ownsdk
 
 import "fmt"
 
