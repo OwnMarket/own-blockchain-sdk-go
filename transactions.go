@@ -3,5 +3,5 @@ package ownSdk
 import "fmt"
 
 func Test() {
-	fmt.Printl("It works!")
+	fmt.Println("It works!")
 }
