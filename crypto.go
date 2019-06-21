@@ -1,4 +1,4 @@
-package crypto
+package ownSdk
 
 import (
 	"crypto/aes"
