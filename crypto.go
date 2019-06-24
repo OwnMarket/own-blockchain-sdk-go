@@ -8,6 +8,8 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"crypto/sha512"
+	"encoding/base64"
+	"encoding/binary"
 	"fmt"
 	"io"
 
@@ -80,6 +82,18 @@ func Decrypt(encryptedText []byte, passwordHash [32]byte) []byte {
 // Encoding
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+func Encode64(src []byte) string {
+	return base64.StdEncoding.EncodeToString(src)
+}
+
+func Decode64(src string) []byte {
+	decoded, err := base64.StdEncoding.DecodeString(src)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	return decoded
+}
+
 func Encode58(src []byte) string {
 	return base58.Encode(src)
 }
@@ -88,6 +102,7 @@ func Decode58(src string) []byte {
 	decoded, err := base58.Decode(src)
 	if err != nil {
 		fmt.Println(err.Error())
+		return make([]byte, 0)
 	}
 	return decoded
 }
@@ -112,6 +127,19 @@ func xsha160(data []byte) []byte {
 func Hash(data []byte) string {
 	_sha256 := xsha256(data)
 	return Encode58(_sha256[:])
+}
+
+func DeriveHash(address string, nonce int64, txActionNumber int16) string {
+	addressBytes := Decode58(address)
+	nonceBytes := make([]byte, 8)
+	binary.LittleEndian.PutUint64(nonceBytes, uint64(nonce))
+	txActionNumberBytes := make([]byte, 2) 
+	binary.LittleEndian.PutUint16(txActionNumberBytes, uint16(txActionNumber))
+	concatBytes := make([]byte, 0)
+	concatBytes = append(concatBytes, addressBytes[:]...)
+	concatBytes = append(concatBytes, nonceBytes[:]...)
+	concatBytes = append(concatBytes, txActionNumberBytes[:]...)
+	return Hash(concatBytes)
 }
 
 func blockchainAddress(publicKey []byte) string {
