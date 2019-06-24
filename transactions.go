@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	ownsdk "github.com/OwnMarket/own-blockchain-sdk-go"
 	. "github.com/shopspring/decimal"
 )
 
@@ -36,7 +35,7 @@ func CreateTx(senderAddress string, nonce int64, actionFee Decimal, expirationTi
 		Nonce:          nonce,
 		ActionFee:      actionFee,
 		ExpirationTime: expirationTime,
-		Acitons: make([]TxAction, 0)
+		Actions:        make([]TxAction, 0),
 	}
 
 	return tx
@@ -163,9 +162,9 @@ func (tx Tx) ToJson(indentation bool) string {
 
 func (tx Tx) sign(networkCode []byte, privateKey string) *SignedTx {
 	json := tx.ToJson(false)
-	signature := ownsdk.SignMessage(networkCode, privateKey, []byte(json))
+	signature := SignMessage(networkCode, privateKey, []byte(json))
 	signedTx := &SignedTx{
-		Tx:        ownsdk.Encode64([]byte(json)),
+		Tx:        Encode64([]byte(json)),
 		Signature: signature,
 	}
 
