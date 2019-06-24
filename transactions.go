@@ -3,8 +3,6 @@ package ownsdk
 import (
 	"encoding/json"
 	"fmt"
-
-	. "github.com/shopspring/decimal"
 )
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -12,24 +10,24 @@ import (
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 type TxAction struct {
-	ActionType string
-	ActionData json.RawMessage
+	ActionType string          `json:"actionType"`
+	ActionData json.RawMessage `json:"actionData"`
 }
 
 type Tx struct {
-	SenderAddress  string
-	Nonce          int64
-	ActionFee      Decimal
-	ExpirationTime int64
-	Actions        []TxAction
+	SenderAddress  string     `json:"senderAddress"`
+	Nonce          int64      `json:"nonce"`
+	ExpirationTime int64      `json:"expirationTime"`
+	ActionFee      float64    `json:"actionFee"`
+	Actions        []TxAction `json:"actions"`
 }
 
 type SignedTx struct {
-	Tx        string
-	Signature string
+	Tx        string `json:"tx"`
+	Signature string `json:"signature"`
 }
 
-func CreateTx(senderAddress string, nonce int64, actionFee Decimal, expirationTime int64) *Tx {
+func CreateTx(senderAddress string, nonce int64, actionFee float64, expirationTime int64) *Tx {
 	tx := &Tx{
 		SenderAddress:  senderAddress,
 		Nonce:          nonce,
@@ -50,18 +48,18 @@ func (tx Tx) addAction(actionType string, actionData json.RawMessage) {
 	tx.Actions = append(tx.Actions, txAction)
 }
 
-func (tx Tx) AddTransferChxAction(recipientAddress string, amount Decimal) {
-	jsonString := fmt.Sprintf("{recipientAddress: %s, amount: %s}", recipientAddress, amount.String())
+func (tx Tx) AddTransferChxAction(recipientAddress string, amount float64) {
+	jsonString := fmt.Sprintf("{recipientAddress: %s, amount: %f}", recipientAddress, amount)
 	tx.addAction("TransferChx", json.RawMessage(jsonString))
 }
 
-func (tx Tx) AddDelegateStakeAction(validatorAddress string, amount Decimal) {
-	jsonString := fmt.Sprintf("{validatorAddress: %s, amount: %s}", validatorAddress, amount.String())
+func (tx Tx) AddDelegateStakeAction(validatorAddress string, amount float64) {
+	jsonString := fmt.Sprintf("{validatorAddress: %s, amount: %f}", validatorAddress, amount)
 	tx.addAction("DelegateStake", json.RawMessage(jsonString))
 }
 
-func (tx Tx) AddConfigureValidatorAction(networkAddress string, sharedRewardPercent Decimal, isEnabled bool) {
-	jsonString := fmt.Sprintf("{networkAddress: %s, sharedRewardPercent: %s, isEnabled: %t}", networkAddress, sharedRewardPercent.String(), isEnabled)
+func (tx Tx) AddConfigureValidatorAction(networkAddress string, sharedRewardPercent float64, isEnabled bool) {
+	jsonString := fmt.Sprintf("{networkAddress: %s, sharedRewardPercent: %f, isEnabled: %t}", networkAddress, sharedRewardPercent, isEnabled)
 	tx.addAction("ConfigureValidator", json.RawMessage(jsonString))
 }
 
@@ -69,13 +67,13 @@ func (tx Tx) AddRemoveValidatorAction() {
 	tx.addAction("DelegateStake", json.RawMessage("{}"))
 }
 
-func (tx Tx) AddTransferAssetAction(fromAccountHash string, toAccountHash string, assetHash string, amount Decimal) {
-	jsonString := fmt.Sprintf("{fromAccountHash: %s, toAccountHash: %s, assetHash: %s, amount: %s}", fromAccountHash, toAccountHash, assetHash, amount.String())
+func (tx Tx) AddTransferAssetAction(fromAccountHash string, toAccountHash string, assetHash string, amount float64) {
+	jsonString := fmt.Sprintf("{fromAccountHash: %s, toAccountHash: %s, assetHash: %s, amount: %f}", fromAccountHash, toAccountHash, assetHash, amount)
 	tx.addAction("TransferAsset", json.RawMessage(jsonString))
 }
 
-func (tx Tx) AddCreateAssetEmissionAction(emissionAccountHash string, assetHash string, amount Decimal) {
-	jsonString := fmt.Sprintf("{emissionAccountHash: %s, assetHash: %s, amount: %s}", emissionAccountHash, assetHash, amount.String())
+func (tx Tx) AddCreateAssetEmissionAction(emissionAccountHash string, assetHash string, amount float64) {
+	jsonString := fmt.Sprintf("{emissionAccountHash: %s, assetHash: %s, amount: %f}", emissionAccountHash, assetHash, amount)
 	tx.addAction("CreateAssetEmission", json.RawMessage(jsonString))
 }
 
@@ -109,8 +107,8 @@ func (tx Tx) AddSubmitVoteAction(accountHash string, assetHash string, resolutio
 	tx.addAction("SubmitVote", json.RawMessage(jsonString))
 }
 
-func (tx Tx) AddSubmitVoteWeightAction(accountHash string, assetHash string, resolutionHash string, voteWeight Decimal) {
-	jsonString := fmt.Sprintf("{accountHash: %s, assetHash: %s, resolutionHash: %s, voteWeight: %s}", accountHash, assetHash, resolutionHash, voteWeight.String())
+func (tx Tx) AddSubmitVoteWeightAction(accountHash string, assetHash string, resolutionHash string, voteWeight float64) {
+	jsonString := fmt.Sprintf("{accountHash: %s, assetHash: %s, resolutionHash: %s, voteWeight: %f}", accountHash, assetHash, resolutionHash, voteWeight)
 	tx.addAction("SubmitVoteWeight", json.RawMessage(jsonString))
 }
 
