@@ -30,6 +30,18 @@ type SignedTx struct {
 	Signature string
 }
 
+func CreateTx(senderAddress string, nonce int64, actionFee Decimal, expirationTime int64) *Tx {
+	tx := &Tx{
+		SenderAddress:  senderAddress,
+		Nonce:          nonce,
+		ActionFee:      actionFee,
+		ExpirationTime: expirationTime,
+		Acitons: make([]TxAction, 0)
+	}
+
+	return tx
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Actions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
