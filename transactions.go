@@ -313,7 +313,7 @@ func (tx *Tx) ToJson(indentation bool) string {
 	return string(b)
 }
 
-func (tx *Tx) sign(networkCode []byte, privateKey string) *SignedTx {
+func (tx *Tx) Sign(networkCode []byte, privateKey string) *SignedTx {
 	json := tx.ToJson(false)
 	signature := SignMessage(networkCode, privateKey, []byte(json))
 	signedTx := &SignedTx{
