@@ -77,6 +77,20 @@ type SetAccountControllerTxActionDto struct {
 	ControllerAddress string `json:"controllerAddress"`
 }
 
+type SubmitVoteTxActionDto struct {
+	AccountHash    string `json:"accountHash"`
+	AssetHash      string `json:"assetHash"`
+	ResolutionHash string `json:"resolutionHash"`
+	VoteHash       string `json:"voteHash"`
+}
+
+type SubmitVoteWeightTxActionDto struct {
+	AccountHash    string  `json:"accountHash"`
+	AssetHash      string  `json:"assetHash"`
+	ResolutionHash string  `json:"resolutionHash"`
+	VoteWeight     float64 `json:"voteWeight"`
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Constructor
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -188,13 +202,23 @@ func (tx *Tx) AddSetAccountControllerAction(accountHash string, controllerAddres
 }
 
 func (tx *Tx) AddSubmitVoteAction(accountHash string, assetHash string, resolutionHash string, voteHash string) {
-	jsonString := fmt.Sprintf("{accountHash: %s, assetHash: %s, resolutionHash: %s, voteHash: %s}", accountHash, assetHash, resolutionHash, voteHash)
-	tx.addAction("SubmitVote", json.RawMessage(jsonString))
+	dto := SubmitVoteTxActionDto{
+		AccountHash:    accountHash,
+		AssetHash:      assetHash,
+		ResolutionHash: resolutionHash,
+		VoteHash:       voteHash,
+	}
+	tx.addAction("SubmitVote", dto)
 }
 
 func (tx *Tx) AddSubmitVoteWeightAction(accountHash string, assetHash string, resolutionHash string, voteWeight float64) {
-	jsonString := fmt.Sprintf("{accountHash: %s, assetHash: %s, resolutionHash: %s, voteWeight: %f}", accountHash, assetHash, resolutionHash, voteWeight)
-	tx.addAction("SubmitVoteWeight", json.RawMessage(jsonString))
+	dto := SubmitVoteWeightTxActionDto{
+		AccountHash:    accountHash,
+		AssetHash:      assetHash,
+		ResolutionHash: resolutionHash,
+		VoteWeight:     voteWeight,
+	}
+	tx.addAction("SubmitVoteWeight", dto)
 }
 
 func (tx *Tx) AddSetAccountEligibilityAction(accountHash string, assetHash string, isPrimaryEligible bool, isSecondaryEligible bool) {

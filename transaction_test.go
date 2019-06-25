@@ -364,3 +364,73 @@ func TestAddSetAccountControllerAction(t *testing.T) {
 	actualJson := tx.ToJson(true)
 	assert.Equal(t, expectedJson, actualJson)
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Actions: Voting
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+func TestAddSubmitVoteAction(t *testing.T) {
+	senderWallet := GenerateWallet()
+	accountHash := "AccountH1"
+	assetHash := "AssetH1"
+	resolutionHash := "ResolutionH1"
+	voteHash := "VoteH1"
+
+	expectedJson :=
+		fmt.Sprintf(
+			`{
+    "senderAddress": "%s",
+    "nonce": 1,
+    "expirationTime": 0,
+    "actionFee": 0.01,
+    "actions": [
+        {
+            "actionType": "SubmitVote",
+            "actionData": {
+                "accountHash": "%s",
+                "assetHash": "%s",
+                "resolutionHash": "%s",
+                "voteHash": "%s"
+            }
+        }
+    ]
+}`, senderWallet.Address, accountHash, assetHash, resolutionHash, voteHash)
+
+	tx := CreateTx(senderWallet.Address, 1, 0.01, 0)
+	tx.AddSubmitVoteAction(accountHash, assetHash, resolutionHash, voteHash)
+	actualJson := tx.ToJson(true)
+	assert.Equal(t, expectedJson, actualJson)
+}
+
+func TestAddSubmitVoteWeightAction(t *testing.T) {
+	senderWallet := GenerateWallet()
+	accountHash := "AccountH1"
+	assetHash := "AssetH1"
+	resolutionHash := "ResolutionH1"
+	var voteWeight float64 = 12345
+
+	expectedJson :=
+		fmt.Sprintf(
+			`{
+    "senderAddress": "%s",
+    "nonce": 1,
+    "expirationTime": 0,
+    "actionFee": 0.01,
+    "actions": [
+        {
+            "actionType": "SubmitVoteWeight",
+            "actionData": {
+                "accountHash": "%s",
+                "assetHash": "%s",
+                "resolutionHash": "%s",
+                "voteWeight": %5.0f
+            }
+        }
+    ]
+}`, senderWallet.Address, accountHash, assetHash, resolutionHash, voteWeight)
+
+	tx := CreateTx(senderWallet.Address, 1, 0.01, 0)
+	tx.AddSubmitVoteWeightAction(accountHash, assetHash, resolutionHash, voteWeight)
+	actualJson := tx.ToJson(true)
+	assert.Equal(t, expectedJson, actualJson)
+}
