@@ -16,7 +16,7 @@ $ go test -v
 
 ## Usage
 
-Fetch Own Blockchain SDK for Go github package
+Fetch Own Blockchain SDK for Go package
 
 ```bash
 $ go get github.com/OwnMarket/own-blockchain-sdk-go
