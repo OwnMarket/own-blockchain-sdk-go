@@ -38,13 +38,36 @@ type DelegateStakeTxActionDto struct {
 }
 
 type ConfigureValidatorTxActionDto struct {
-	NetworkAddress 		string  `json:"networkAddress"`
+	NetworkAddress      string  `json:"networkAddress"`
 	SharedRewardPercent float64 `json:"sharedRewardPercent"`
-	IsEnabled			bool `json:"isEnabled"`
+	IsEnabled           bool    `json:"isEnabled"`
 }
 
-type RemoveValidatorTxActionDto struct {
-	
+type RemoveValidatorTxActionDto struct{}
+
+type TransferAssetTxActionDto struct {
+	FromAccountHash string  `json:"fromAccountHash"`
+	ToAccountHash   string  `json:"toAccountHash"`
+	AssetHash       string  `json:"assetHash"`
+	Amount          float64 `json:"amount"`
+}
+
+type CreateAssetEmissionTxActionDto struct {
+	EmissionAccountHash string  `json:"emissionAccountHash"`
+	AssetHash           string  `json:"assetHash"`
+	Amount              float64 `json:"amount"`
+}
+
+type CreateAssetTxActionDto struct{}
+
+type SetAssetCodeTxActionDto struct {
+	AssetHash string `json:"assetHash"`
+	AssetCode string `json:"assetCode"`
+}
+
+type SetAssetControllerTxActionDto struct {
+	AssetHash         string `json:"assetHash"`
+	ControllerAddress string `json:"controllerAddress"`
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -76,7 +99,7 @@ func (tx *Tx) AddTransferChxAction(recipientAddress string, amount float64) {
 	dto := TransferChxTxActionDto{
 		RecipientAddress: recipientAddress,
 		Amount:           amount,
-	}	
+	}
 	tx.addAction("TransferChx", dto)
 }
 
@@ -84,16 +107,16 @@ func (tx *Tx) AddDelegateStakeAction(validatorAddress string, amount float64) {
 	dto := DelegateStakeTxActionDto{
 		ValidatorAddress: validatorAddress,
 		Amount:           amount,
-	}	
+	}
 	tx.addAction("DelegateStake", dto)
 }
 
 func (tx *Tx) AddConfigureValidatorAction(networkAddress string, sharedRewardPercent float64, isEnabled bool) {
 	dto := ConfigureValidatorTxActionDto{
-		NetworkAddress: networkAddress,
+		NetworkAddress:      networkAddress,
 		SharedRewardPercent: sharedRewardPercent,
 		IsEnabled:           isEnabled,
-	}	
+	}
 	tx.addAction("ConfigureValidator", dto)
 }
 
@@ -103,28 +126,44 @@ func (tx *Tx) AddRemoveValidatorAction() {
 }
 
 func (tx *Tx) AddTransferAssetAction(fromAccountHash string, toAccountHash string, assetHash string, amount float64) {
-	jsonString := fmt.Sprintf("{fromAccountHash: %s, toAccountHash: %s, assetHash: %s, amount: %f}", fromAccountHash, toAccountHash, assetHash, amount)
-	tx.addAction("TransferAsset", json.RawMessage(jsonString))
+	dto := TransferAssetTxActionDto{
+		FromAccountHash: fromAccountHash,
+		ToAccountHash:   toAccountHash,
+		AssetHash:       assetHash,
+		Amount:          amount,
+	}
+	tx.addAction("TransferAsset", dto)
 }
 
 func (tx *Tx) AddCreateAssetEmissionAction(emissionAccountHash string, assetHash string, amount float64) {
-	jsonString := fmt.Sprintf("{emissionAccountHash: %s, assetHash: %s, amount: %f}", emissionAccountHash, assetHash, amount)
-	tx.addAction("CreateAssetEmission", json.RawMessage(jsonString))
+	dto := CreateAssetEmissionTxActionDto{
+		EmissionAccountHash: emissionAccountHash,
+		AssetHash:           assetHash,
+		Amount:              amount,
+	}
+	tx.addAction("CreateAssetEmission", dto)
 }
 
-func (tx *Tx) AddCreateAssetAction() {
-	tx.addAction("CreateAsset", json.RawMessage("{}"))
-	// TODO: return derive hash
+func (tx *Tx) AddCreateAssetAction() string {
+	dto := CreateAssetTxActionDto{}
+	tx.addAction("CreateAsset", dto)
+	return DeriveHash(tx.SenderAddress, tx.Nonce, int16(len(tx.Actions)))
 }
 
 func (tx *Tx) AddSetAssetCodeAction(assetHash string, assetCode string) {
-	jsonString := fmt.Sprintf("{assetHash: %s, assetCode: %s}", assetHash, assetCode)
-	tx.addAction("SetAssetCode", json.RawMessage(jsonString))
+	dto := SetAssetCodeTxActionDto{
+		AssetHash: assetHash,
+		AssetCode: assetCode,
+	}
+	tx.addAction("SetAssetCode", dto)
 }
 
 func (tx *Tx) AddSetAssetControllerAction(assetHash string, controllerAddress string) {
-	jsonString := fmt.Sprintf("{assetHash: %s, controllerAddress: %s}", assetHash, controllerAddress)
-	tx.addAction("SetAssetController", json.RawMessage(jsonString))
+	dto := SetAssetControllerTxActionDto{
+		AssetHash:         assetHash,
+		ControllerAddress: controllerAddress,
+	}
+	tx.addAction("SetAssetController", dto)
 }
 
 func (tx *Tx) AddCreateAccountAction() {
