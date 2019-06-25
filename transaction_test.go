@@ -589,3 +589,47 @@ func TestAddRemoveKycProviderAction(t *testing.T) {
 	actualJson := tx.ToJson(true)
 	assert.Equal(t, expectedJson, actualJson)
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Actions: Multiple
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+func TestAddTransferChxActionMultiple(t *testing.T) {
+	senderWallet := GenerateWallet()
+	recipientWallet1 := GenerateWallet()
+	recipientWallet2 := GenerateWallet()
+	var amount1 float64 = 200
+	var amount2 float64 = 300
+
+	expectedJson :=
+		fmt.Sprintf(
+			`{
+    "senderAddress": "%s",
+    "nonce": 1,
+    "expirationTime": 0,
+    "actionFee": 0.01,
+    "actions": [
+        {
+            "actionType": "TransferChx",
+            "actionData": {
+                "recipientAddress": "%s",
+                "amount": %3.0f
+            }
+        },
+        {
+            "actionType": "TransferChx",
+            "actionData": {
+                "recipientAddress": "%s",
+                "amount": %3.0f
+            }
+        }
+    ]
+}`, senderWallet.Address, recipientWallet1.Address, amount1, recipientWallet2.Address, amount2)
+
+	tx := CreateTx(senderWallet.Address, 1, 0.01, 0)
+	tx.AddTransferChxAction(recipientWallet1.Address, amount1)
+	tx.AddTransferChxAction(recipientWallet2.Address, amount2)
+
+	actualJson := tx.ToJson(true)
+	assert.Equal(t, expectedJson, actualJson)
+}
