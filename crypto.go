@@ -133,7 +133,7 @@ func DeriveHash(address string, nonce int64, txActionNumber int16) string {
 	addressBytes := Decode58(address)
 	nonceBytes := make([]byte, 8)
 	binary.LittleEndian.PutUint64(nonceBytes, uint64(nonce))
-	txActionNumberBytes := make([]byte, 2) 
+	txActionNumberBytes := make([]byte, 2)
 	binary.LittleEndian.PutUint16(txActionNumberBytes, uint16(txActionNumber))
 	concatBytes := make([]byte, 0)
 	concatBytes = append(concatBytes, addressBytes[:]...)
