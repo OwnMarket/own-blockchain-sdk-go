@@ -70,6 +70,13 @@ type SetAssetControllerTxActionDto struct {
 	ControllerAddress string `json:"controllerAddress"`
 }
 
+type CreateAccountTxActionDto struct{}
+
+type SetAccountControllerTxActionDto struct {
+	AccountHash       string `json:"accountHash"`
+	ControllerAddress string `json:"controllerAddress"`
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Constructor
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -166,14 +173,18 @@ func (tx *Tx) AddSetAssetControllerAction(assetHash string, controllerAddress st
 	tx.addAction("SetAssetController", dto)
 }
 
-func (tx *Tx) AddCreateAccountAction() {
-	tx.addAction("CreateAccount", json.RawMessage("{}"))
-	// TODO: return derive hash
+func (tx *Tx) AddCreateAccountAction() string {
+	dto := CreateAccountTxActionDto{}
+	tx.addAction("CreateAccount", dto)
+	return DeriveHash(tx.SenderAddress, tx.Nonce, int16(len(tx.Actions)))
 }
 
 func (tx *Tx) AddSetAccountControllerAction(accountHash string, controllerAddress string) {
-	jsonString := fmt.Sprintf("{accountHash: %s, controllerAddress: %s}", accountHash, controllerAddress)
-	tx.addAction("SetAccountController", json.RawMessage(jsonString))
+	dto := SetAccountControllerTxActionDto{
+		AccountHash:       accountHash,
+		ControllerAddress: controllerAddress,
+	}
+	tx.addAction("SetAccountController", dto)
 }
 
 func (tx *Tx) AddSubmitVoteAction(accountHash string, assetHash string, resolutionHash string, voteHash string) {

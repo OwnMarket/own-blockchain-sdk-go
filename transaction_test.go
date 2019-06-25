@@ -321,3 +321,46 @@ func TestAddSetAssetControllerAction(t *testing.T) {
 	actualJson := tx.ToJson(true)
 	assert.Equal(t, expectedJson, actualJson)
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Actions: Account Management
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+func TestAddCreateAccountActionReturnsAccountHash(t *testing.T) {
+	senderWallet := GenerateWallet()
+	var nonce int64 = 1
+	expectedHash := DeriveHash(senderWallet.Address, nonce, 1)
+
+	tx := CreateTx(senderWallet.Address, 1, 0.01, 0)
+	actualHash := tx.AddCreateAccountAction()
+	assert.Equal(t, expectedHash, actualHash)
+}
+
+func TestAddSetAccountControllerAction(t *testing.T) {
+	senderWallet := GenerateWallet()
+	accountHash := "AccountH1"
+	controllerWallet := GenerateWallet()
+
+	expectedJson :=
+		fmt.Sprintf(
+			`{
+    "senderAddress": "%s",
+    "nonce": 1,
+    "expirationTime": 0,
+    "actionFee": 0.01,
+    "actions": [
+        {
+            "actionType": "SetAccountController",
+            "actionData": {
+                "accountHash": "%s",
+                "controllerAddress": "%s"
+            }
+        }
+    ]
+}`, senderWallet.Address, accountHash, controllerWallet.Address)
+
+	tx := CreateTx(senderWallet.Address, 1, 0.01, 0)
+	tx.AddSetAccountControllerAction(accountHash, controllerWallet.Address)
+	actualJson := tx.ToJson(true)
+	assert.Equal(t, expectedJson, actualJson)
+}
