@@ -198,20 +198,20 @@ func sign(privateKey string, dataHash [32]byte) string {
 	return Encode58(signatureBytes)
 }
 
-func SignMessage(networkCode string, privateKey string, message []byte) string {
-	messageHash := xsha256(message)
+func SignMessage(networkCode string, privateKey string, message string) string {
+	messageHash := xsha256([]byte(message))
 	networkIdBytes := xsha256([]byte(networkCode))
 	dataToSign := xsha256(append(messageHash[:], networkIdBytes[:]...))
 	return sign(privateKey, dataToSign)
 }
 
-func SignPlainText(privateKey string, text []byte) string {
-	dataToSign := xsha256(text)
+func SignPlainText(privateKey string, text string) string {
+	dataToSign := xsha256([]byte(text))
 	return sign(privateKey, dataToSign)
 }
 
-func VerifyPlainTextSignature(signature string, text []byte) string {
-	dataToVerify := xsha256(text)
+func VerifyPlainTextSignature(signature string, text string) string {
+	dataToVerify := xsha256([]byte(text))
 	signatureBytes := Decode58(signature)
 	publicKey, err := secp256k1.RecoverPubkey(dataToVerify[:], signatureBytes)
 	if err != nil {

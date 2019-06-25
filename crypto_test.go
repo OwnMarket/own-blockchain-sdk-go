@@ -94,7 +94,7 @@ func TestWallet(t *testing.T) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 func TestSigningMessage(t *testing.T) {
-	msg := []byte("Chainium")
+	msg := "Chainium"
 	networkCode := "UNIT_TESTS" //TODO: replace with OWN_PUBLIC_BLOCKCHAIN_MAINNET for mainnet!
 	sig := SignMessage(networkCode, "B6WNNx9oK8qRUU52PpzjXHZuv4NUb3Z33hdju3hhrceS", msg)
 	expectedSig := "6Hhxz2eP3AagR56mP4AAaKViUxHi3gM9c5weLDR48x4X4ynRBDfxsHGjhX9cni1mtCkNxbnZ783YPgMwVYV52X1w5"
@@ -102,7 +102,7 @@ func TestSigningMessage(t *testing.T) {
 }
 
 func TestSignPlainText(t *testing.T) {
-	txt := []byte("Chainium")
+	txt := "Chainium"
 	privateKey := "3rzY3EENhYrWXzUqNnMEbGUr3iEzzSZrjMwJ1CgQpJpq"
 	expectedSig := "EzCsWgPozyVT9o6TycYV6q1n4YK4QWixa6Lk4GFvwrj6RU3K1wHcwNPZJUMBYcsGp5oFhytHiThon5zqE8uLk8naB"
 	sig := SignPlainText(privateKey, txt)
@@ -110,7 +110,7 @@ func TestSignPlainText(t *testing.T) {
 }
 
 func TestVerifyPlainTextSignature(t *testing.T) {
-	txt := []byte("Chainium")
+	txt := "Chainium"
 	wallet := GenerateWallet()
 	expectedAddress := AddressFromPrivateKey(wallet.PrivateKey)
 	sig := SignPlainText(wallet.PrivateKey, txt)
