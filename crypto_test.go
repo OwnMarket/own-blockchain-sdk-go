@@ -53,7 +53,7 @@ func TestDecode58(t *testing.T) {
 	assert.Equal(t, expected, string(actual))
 }
 
-func TestEncoding(t *testing.T) {
+func TestEncodeDecode58Rountrip(t *testing.T) {
 	encoded := Encode58([]byte("Chainium"))
 	decoded := Decode58(encoded)
 	assert.Equal(t, "Chainium", string(decoded))
@@ -67,6 +67,15 @@ func TestHash(t *testing.T) {
 	originalData := []byte("Chainium")
 	expected := "Dp6vNLdUbRTc1Y3i9uSBritNqvqe4es9MjjGrVi1nQMu"
 	actual := Hash(originalData)
+	assert.Equal(t, expected, actual)
+}
+
+func TestDeriveHash(t *testing.T) {
+	address := "CHPJ6aVwpGBRf1dv6Ey1TuhJzt1VtCP5LYB"
+	var nonce int64 = 32
+	var txActionNumber int16 = 2
+	expected := "5kHcMrwXUptjmbdR8XBW2yY3FkSFwnMdrVr22Yg39pTR"
+	actual := DeriveHash(address, nonce, txActionNumber)
 	assert.Equal(t, expected, actual)
 }
 
