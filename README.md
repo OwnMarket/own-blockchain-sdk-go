@@ -47,6 +47,6 @@ func main() {
 	// Sign the transaction for submission to node API on TestNet
 	networkCode := "OWN_PUBLIC_BLOCKCHAIN_TESTNET"
 	signedTx := tx.Sign(networkCode, wallet.PrivateKey)
-	fmt.Println(signedTx.ToJson(true))
+	fmt.Println(signedTx.ToJson(false))
 }
 ```
