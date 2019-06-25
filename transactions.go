@@ -1,4 +1,4 @@
-package ownsdk
+package ownSdk
 
 import (
 	"encoding/json"
