@@ -5,15 +5,25 @@ Own Blockchain SDK for Go
 ## Quick Start
 
 ```bash
-go get github.com/OwnMarket/own-blockchain-sdk-go
+$ git clone https://github.com/OwnMarket/own-blockchain-sdk-go.git
+$ cd own-blockchain-sdk-go
 ```
 
 Run tests:
 ```bash
-go test -v
+$ go test -v
 ```
 
 ## Usage
+
+Fetch Own Blockchain SDK for Go github package
+
+```bash
+$ go get github.com/OwnMarket/own-blockchain-sdk-go
+```
+
+Use the package in Go code
+
 ```bash
 
 package main
