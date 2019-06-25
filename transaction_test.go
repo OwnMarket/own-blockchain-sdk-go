@@ -106,3 +106,34 @@ func TestAddDelegateStakeAction(t *testing.T) {
 	actualJson := tx.ToJson(true)
 	assert.Equal(t, expectedJson, actualJson)
 }
+
+func TestAddConfigureValidatorAction(t *testing.T) {
+	senderWallet := GenerateWallet()
+	networkAddress := "val01.some.domain.com:25718"
+	var sharedRewardPercent float64 = 100000
+	isEnabled := true
+
+	expectedJson :=
+		fmt.Sprintf(
+			`{
+    "senderAddress": "%s",
+    "nonce": 1,
+    "expirationTime": 0,
+    "actionFee": 0.01,
+    "actions": [
+        {
+            "actionType": "ConfigureValidator",
+            "actionData": {
+                "networkAddress": "%s",
+                "sharedRewardPercent": %3.0f,
+                "isEnabled": %t
+            }
+        }
+    ]
+}`, senderWallet.Address, networkAddress, sharedRewardPercent, isEnabled)
+
+	tx := CreateTx(senderWallet.Address, 1, 0.01, 0)
+	tx.AddConfigureValidatorAction(networkAddress, sharedRewardPercent, isEnabled)
+	actualJson := tx.ToJson(true)
+	assert.Equal(t, expectedJson, actualJson)
+}

@@ -37,6 +37,11 @@ type DelegateStakeTxActionDto struct {
 	Amount           float64 `json:"amount"`
 }
 
+type ConfigureValidatorTxActionDto struct {
+	NetworkAddress 		string  `json:"networkAddress"`
+	SharedRewardPercent float64 `json:"sharedRewardPercent"`
+	IsEnabled			bool `json:"isEnabled"`
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Constructor
@@ -80,8 +85,12 @@ func (tx *Tx) AddDelegateStakeAction(validatorAddress string, amount float64) {
 }
 
 func (tx *Tx) AddConfigureValidatorAction(networkAddress string, sharedRewardPercent float64, isEnabled bool) {
-	jsonString := fmt.Sprintf("{networkAddress: %s, sharedRewardPercent: %f, isEnabled: %t}", networkAddress, sharedRewardPercent, isEnabled)
-	tx.addAction("ConfigureValidator", json.RawMessage(jsonString))
+	dto := ConfigureValidatorTxActionDto{
+		NetworkAddress: networkAddress,
+		SharedRewardPercent: sharedRewardPercent,
+		IsEnabled:           isEnabled,
+	}	
+	tx.addAction("ConfigureValidator", dto)
 }
 
 func (tx *Tx) AddRemoveValidatorAction() {
