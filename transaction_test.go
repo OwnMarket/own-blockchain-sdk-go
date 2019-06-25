@@ -434,3 +434,158 @@ func TestAddSubmitVoteWeightAction(t *testing.T) {
 	actualJson := tx.ToJson(true)
 	assert.Equal(t, expectedJson, actualJson)
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Actions: Eligibility
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+func TestAddSetAccountEligibilityAction(t *testing.T) {
+	senderWallet := GenerateWallet()
+	accountHash := "FAccH1"
+	assetHash := "AssetH1"
+	isPrimaryEligible := false
+	isSecondaryEligible := true
+
+	expectedJson :=
+		fmt.Sprintf(
+			`{
+    "senderAddress": "%s",
+    "nonce": 1,
+    "expirationTime": 0,
+    "actionFee": 0.01,
+    "actions": [
+        {
+            "actionType": "SetAccountEligibility",
+            "actionData": {
+                "accountHash": "%s",
+                "assetHash": "%s",
+                "isPrimaryEligible": %t,
+                "isSecondaryEligible": %t
+            }
+        }
+    ]
+}`, senderWallet.Address, accountHash, assetHash, isPrimaryEligible, isSecondaryEligible)
+
+	tx := CreateTx(senderWallet.Address, 1, 0.01, 0)
+	tx.AddSetAccountEligibilityAction(accountHash, assetHash, isPrimaryEligible, isSecondaryEligible)
+	actualJson := tx.ToJson(true)
+	assert.Equal(t, expectedJson, actualJson)
+}
+
+func TestAddSetAssetEligibilityAction(t *testing.T) {
+	senderWallet := GenerateWallet()
+	assetHash := "AssetH1"
+	isEligibilityRequired := true
+
+	expectedJson :=
+		fmt.Sprintf(
+			`{
+    "senderAddress": "%s",
+    "nonce": 1,
+    "expirationTime": 0,
+    "actionFee": 0.01,
+    "actions": [
+        {
+            "actionType": "SetAssetEligibility",
+            "actionData": {
+                "assetHash": "%s",
+                "isEligibilityRequired": %t
+            }
+        }
+    ]
+}`, senderWallet.Address, assetHash, isEligibilityRequired)
+
+	tx := CreateTx(senderWallet.Address, 1, 0.01, 0)
+	tx.AddSetAssetEligibilityAction(assetHash, isEligibilityRequired)
+	actualJson := tx.ToJson(true)
+	assert.Equal(t, expectedJson, actualJson)
+}
+
+func TestAddChangeKycControllerAddressAction(t *testing.T) {
+	senderWallet := GenerateWallet()
+	accountHash := "FAccH1"
+	assetHash := "AssetH1"
+	kycControllerAddress := "KycCtrlAddr1"
+
+	expectedJson :=
+		fmt.Sprintf(
+			`{
+    "senderAddress": "%s",
+    "nonce": 1,
+    "expirationTime": 0,
+    "actionFee": 0.01,
+    "actions": [
+        {
+            "actionType": "ChangeKycControllerAddress",
+            "actionData": {
+                "accountHash": "%s",
+                "assetHash": "%s",
+                "kycControllerAddress": "%s"
+            }
+        }
+    ]
+}`, senderWallet.Address, accountHash, assetHash, kycControllerAddress)
+
+	tx := CreateTx(senderWallet.Address, 1, 0.01, 0)
+	tx.AddChangeKycControllerAddressAction(accountHash, assetHash, kycControllerAddress)
+	actualJson := tx.ToJson(true)
+	assert.Equal(t, expectedJson, actualJson)
+}
+
+func TestAddAddKycProviderAction(t *testing.T) {
+	senderWallet := GenerateWallet()
+	assetHash := "AssetH1"
+	providerAddress := GenerateWallet().Address
+
+	expectedJson :=
+		fmt.Sprintf(
+			`{
+    "senderAddress": "%s",
+    "nonce": 1,
+    "expirationTime": 0,
+    "actionFee": 0.01,
+    "actions": [
+        {
+            "actionType": "AddKycProvider",
+            "actionData": {
+                "assetHash": "%s",
+                "providerAddress": "%s"
+            }
+        }
+    ]
+}`, senderWallet.Address, assetHash, providerAddress)
+
+	tx := CreateTx(senderWallet.Address, 1, 0.01, 0)
+	tx.AddAddKycProviderAction(assetHash, providerAddress)
+	actualJson := tx.ToJson(true)
+	assert.Equal(t, expectedJson, actualJson)
+}
+
+func TestAddRemoveKycProviderAction(t *testing.T) {
+	senderWallet := GenerateWallet()
+	assetHash := "AssetH1"
+	providerAddress := GenerateWallet().Address
+
+	expectedJson :=
+		fmt.Sprintf(
+			`{
+    "senderAddress": "%s",
+    "nonce": 1,
+    "expirationTime": 0,
+    "actionFee": 0.01,
+    "actions": [
+        {
+            "actionType": "RemoveKycProvider",
+            "actionData": {
+                "assetHash": "%s",
+                "providerAddress": "%s"
+            }
+        }
+    ]
+}`, senderWallet.Address, assetHash, providerAddress)
+
+	tx := CreateTx(senderWallet.Address, 1, 0.01, 0)
+	tx.AddRemoveKycProviderAction(assetHash, providerAddress)
+	actualJson := tx.ToJson(true)
+	assert.Equal(t, expectedJson, actualJson)
+}

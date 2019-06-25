@@ -91,6 +91,34 @@ type SubmitVoteWeightTxActionDto struct {
 	VoteWeight     float64 `json:"voteWeight"`
 }
 
+type SetAccountEligibilityTxActionDto struct {
+	AccountHash         string `json:"accountHash"`
+	AssetHash           string `json:"assetHash"`
+	IsPrimaryEligible   bool   `json:"isPrimaryEligible"`
+	IsSecondaryEligible bool   `json:"isSecondaryEligible"`
+}
+
+type SetAssetEligibilityTxActionDto struct {
+	AssetHash             string `json:"assetHash"`
+	IsEligibilityRequired bool   `json:"isEligibilityRequired"`
+}
+
+type ChangeKycControllerAddressTxActionDto struct {
+	AccountHash          string `json:"accountHash"`
+	AssetHash            string `json:"assetHash"`
+	KycControllerAddress string `json:"kycControllerAddress"`
+}
+
+type AddKycProviderTxActionDto struct {
+	AssetHash       string `json:"assetHash"`
+	ProviderAddress string `json:"providerAddress"`
+}
+
+type RemoveKycProviderTxActionDto struct {
+	AssetHash       string `json:"assetHash"`
+	ProviderAddress string `json:"providerAddress"`
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Constructor
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -222,28 +250,46 @@ func (tx *Tx) AddSubmitVoteWeightAction(accountHash string, assetHash string, re
 }
 
 func (tx *Tx) AddSetAccountEligibilityAction(accountHash string, assetHash string, isPrimaryEligible bool, isSecondaryEligible bool) {
-	jsonString := fmt.Sprintf("{accountHash: %s, assetHash: %s, isPrimaryEligible: %t, isSecondaryEligible: %t}", accountHash, assetHash, isPrimaryEligible, isSecondaryEligible)
-	tx.addAction("SetAccountEligibility", json.RawMessage(jsonString))
+	dto := SetAccountEligibilityTxActionDto{
+		AccountHash:         accountHash,
+		AssetHash:           assetHash,
+		IsPrimaryEligible:   isPrimaryEligible,
+		IsSecondaryEligible: isSecondaryEligible,
+	}
+	tx.addAction("SetAccountEligibility", dto)
 }
 
 func (tx *Tx) AddSetAssetEligibilityAction(assetHash string, isEligibilityRequired bool) {
-	jsonString := fmt.Sprintf("{assetHash: %s, isEligibilityRequired: %t}", assetHash, isEligibilityRequired)
-	tx.addAction("SetAssetEligibility", json.RawMessage(jsonString))
+	dto := SetAssetEligibilityTxActionDto{
+		AssetHash:             assetHash,
+		IsEligibilityRequired: isEligibilityRequired,
+	}
+	tx.addAction("SetAssetEligibility", dto)
 }
 
 func (tx *Tx) AddChangeKycControllerAddressAction(accountHash string, assetHash string, kycControllerAddress string) {
-	jsonString := fmt.Sprintf("{accountHash: %s, assetHash: %s, kycControllerAddress: %s}", accountHash, assetHash, kycControllerAddress)
-	tx.addAction("ChangeKycControllerAddress", json.RawMessage(jsonString))
+	dto := ChangeKycControllerAddressTxActionDto{
+		AccountHash:          accountHash,
+		AssetHash:            assetHash,
+		KycControllerAddress: kycControllerAddress,
+	}
+	tx.addAction("ChangeKycControllerAddress", dto)
 }
 
 func (tx *Tx) AddAddKycProviderAction(assetHash string, providerAddress string) {
-	jsonString := fmt.Sprintf("{assetHash: %s, providerAddress: %s}", assetHash, providerAddress)
-	tx.addAction("AddKycProvider", json.RawMessage(jsonString))
+	dto := AddKycProviderTxActionDto{
+		AssetHash:       assetHash,
+		ProviderAddress: providerAddress,
+	}
+	tx.addAction("AddKycProvider", dto)
 }
 
 func (tx *Tx) AddRemoveKycProviderAction(assetHash string, providerAddress string) {
-	jsonString := fmt.Sprintf("{assetHash: %s, providerAddress: %s}", assetHash, providerAddress)
-	tx.addAction("RemoveKycProvider", json.RawMessage(jsonString))
+	dto := RemoveKycProviderTxActionDto{
+		AssetHash:       assetHash,
+		ProviderAddress: providerAddress,
+	}
+	tx.addAction("RemoveKycProvider", dto)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
