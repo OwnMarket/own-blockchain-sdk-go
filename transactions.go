@@ -43,6 +43,10 @@ type ConfigureValidatorTxActionDto struct {
 	IsEnabled			bool `json:"isEnabled"`
 }
 
+type RemoveValidatorTxActionDto struct {
+	
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Constructor
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,7 +98,8 @@ func (tx *Tx) AddConfigureValidatorAction(networkAddress string, sharedRewardPer
 }
 
 func (tx *Tx) AddRemoveValidatorAction() {
-	tx.addAction("DelegateStake", json.RawMessage("{}"))
+	dto := RemoveValidatorTxActionDto{}
+	tx.addAction("RemoveValidator", dto)
 }
 
 func (tx *Tx) AddTransferAssetAction(fromAccountHash string, toAccountHash string, assetHash string, amount float64) {

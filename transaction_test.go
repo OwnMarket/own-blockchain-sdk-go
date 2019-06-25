@@ -137,3 +137,27 @@ func TestAddConfigureValidatorAction(t *testing.T) {
 	actualJson := tx.ToJson(true)
 	assert.Equal(t, expectedJson, actualJson)
 }
+
+func TestAddRemoveValidatorAction(t *testing.T) {
+	senderWallet := GenerateWallet()
+
+	expectedJson :=
+		fmt.Sprintf(
+			`{
+    "senderAddress": "%s",
+    "nonce": 1,
+    "expirationTime": 0,
+    "actionFee": 0.01,
+    "actions": [
+        {
+            "actionType": "RemoveValidator",
+            "actionData": {}
+        }
+    ]
+}`, senderWallet.Address)
+
+	tx := CreateTx(senderWallet.Address, 1, 0.01, 0)
+	tx.AddRemoveValidatorAction()
+	actualJson := tx.ToJson(true)
+	assert.Equal(t, expectedJson, actualJson)
+}
