@@ -77,3 +77,32 @@ func TestAddTransferChxAction(t *testing.T) {
 	actualJson := tx.ToJson(true)
 	assert.Equal(t, expectedJson, actualJson)
 }
+
+func TestAddDelegateStakeAction(t *testing.T) {
+	senderWallet := GenerateWallet()
+	validatorWallet := GenerateWallet()
+	var amount float64 = 100000
+
+	expectedJson :=
+		fmt.Sprintf(
+			`{
+    "senderAddress": "%s",
+    "nonce": 1,
+    "expirationTime": 0,
+    "actionFee": 0.01,
+    "actions": [
+        {
+            "actionType": "DelegateStake",
+            "actionData": {
+                "validatorAddress": "%s",
+                "amount": %3.0f
+            }
+        }
+    ]
+}`, senderWallet.Address, validatorWallet.Address, amount)
+
+	tx := CreateTx(senderWallet.Address, 1, 0.01, 0)
+	tx.AddDelegateStakeAction(validatorWallet.Address, amount)
+	actualJson := tx.ToJson(true)
+	assert.Equal(t, expectedJson, actualJson)
+}

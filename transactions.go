@@ -32,6 +32,12 @@ type TransferChxTxActionDto struct {
 	Amount           float64 `json:"amount"`
 }
 
+type DelegateStakeTxActionDto struct {
+	ValidatorAddress string  `json:"validatorAddress"`
+	Amount           float64 `json:"amount"`
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Constructor
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,8 +72,11 @@ func (tx *Tx) AddTransferChxAction(recipientAddress string, amount float64) {
 }
 
 func (tx *Tx) AddDelegateStakeAction(validatorAddress string, amount float64) {
-	jsonString := fmt.Sprintf("{validatorAddress: %s, amount: %f}", validatorAddress, amount)
-	tx.addAction("DelegateStake", json.RawMessage(jsonString))
+	dto := DelegateStakeTxActionDto{
+		ValidatorAddress: validatorAddress,
+		Amount:           amount,
+	}	
+	tx.addAction("DelegateStake", dto)
 }
 
 func (tx *Tx) AddConfigureValidatorAction(networkAddress string, sharedRewardPercent float64, isEnabled bool) {
