@@ -296,13 +296,13 @@ func (tx *Tx) AddRemoveKycProviderAction(assetHash string, providerAddress strin
 // Signing
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-func (tx *Tx) ToJson(indentation bool) string {
+func toJson(data interface{}, indentation bool) string {
 	var b []byte
 	var err error
 	if indentation {
-		b, err = json.MarshalIndent(tx, "", "    ")
+		b, err = json.MarshalIndent(data, "", "    ")
 	} else {
-		b, err = json.Marshal(tx)
+		b, err = json.Marshal(data)
 	}
 
 	if err != nil {
@@ -311,6 +311,13 @@ func (tx *Tx) ToJson(indentation bool) string {
 	}
 
 	return string(b)
+}
+func (tx *Tx) ToJson(indentation bool) string {
+	return toJson(tx, indentation)
+}
+
+func (signedTx *SignedTx) ToJson(indentation bool) string {
+	return toJson(signedTx, indentation)
 }
 
 func (tx *Tx) Sign(networkCode []byte, privateKey string) *SignedTx {
