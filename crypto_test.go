@@ -95,7 +95,7 @@ func TestWallet(t *testing.T) {
 
 func TestSigningMessage(t *testing.T) {
 	msg := []byte("Chainium")
-	networkCode := []byte("UNIT_TESTS") //TODO: replace with OWN_PUBLIC_BLOCKCHAIN_MAINNET for mainnet!
+	networkCode := "UNIT_TESTS" //TODO: replace with OWN_PUBLIC_BLOCKCHAIN_MAINNET for mainnet!
 	sig := SignMessage(networkCode, "B6WNNx9oK8qRUU52PpzjXHZuv4NUb3Z33hdju3hhrceS", msg)
 	expectedSig := "6Hhxz2eP3AagR56mP4AAaKViUxHi3gM9c5weLDR48x4X4ynRBDfxsHGjhX9cni1mtCkNxbnZ783YPgMwVYV52X1w5"
 	assert.Equal(t, expectedSig, sig)

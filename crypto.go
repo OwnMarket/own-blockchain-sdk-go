@@ -198,9 +198,9 @@ func sign(privateKey string, dataHash [32]byte) string {
 	return Encode58(signatureBytes)
 }
 
-func SignMessage(networkCode []byte, privateKey string, message []byte) string {
+func SignMessage(networkCode string, privateKey string, message []byte) string {
 	messageHash := xsha256(message)
-	networkIdBytes := xsha256(networkCode)
+	networkIdBytes := xsha256([]byte(networkCode))
 	dataToSign := xsha256(append(messageHash[:], networkIdBytes[:]...))
 	return sign(privateKey, dataToSign)
 }
