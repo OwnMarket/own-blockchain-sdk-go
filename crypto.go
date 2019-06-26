@@ -188,6 +188,15 @@ func AddressFromPrivateKey(privateKey string) string {
 	return blockchainAddress(publicKey)
 }
 
+func WalletFromPrivateKey(privateKey string) *WalletInfo {
+	address := AddressFromPrivateKey(privateKey)
+	wallet := &WalletInfo{
+		PrivateKey: privateKey,
+		Address:    address,
+	}
+	return wallet
+}
+
 func sign(privateKey string, dataHash [32]byte) string {
 	privateKeyBytes := Decode58(privateKey)
 	signatureBytes, err := secp256k1.Sign(dataHash[:], privateKeyBytes)
