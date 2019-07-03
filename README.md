@@ -24,7 +24,7 @@ $ go get github.com/OwnMarket/own-blockchain-sdk-go
 
 Use the package in Go code
 
-```bash
+```go
 package main
 
 import (
