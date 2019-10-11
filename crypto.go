@@ -1,6 +1,7 @@
 package ownSdk
 
 import (
+	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/ecdsa"
@@ -12,6 +13,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
+	"strings"
 
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/crypto/secp256k1"
@@ -151,6 +153,25 @@ func blockchainAddress(publicKey []byte) string {
 	_xsha256_256 := xsha256(_xsha256[:])
 	checksum := _xsha256_256[:4]
 	return Encode58(append(publicKeyHashWithPrefix, checksum...))
+}
+
+func IsValidBlockchainAddress(address string) bool {
+	addressPrefix := []byte{6, 90} //CH
+	if address == "" || !strings.HasPrefix(address, "CH") {
+		return false
+	}
+	addressBytes := Decode58(address)
+	if len(addressBytes) != 26 || bytes.Compare(addressBytes[:2], addressPrefix[:]) != 0 {
+		return false
+	}
+
+	publicKeyHashWithPrefix := addressBytes[:22]
+	checksum := addressBytes[22:]
+	_xsha256 := xsha256(publicKeyHashWithPrefix)
+	_xsha256_256 := xsha256(_xsha256[:])
+	calculatedChecksum := _xsha256_256[:4]
+
+	return bytes.Compare(checksum, calculatedChecksum) == 0
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -79,6 +79,20 @@ func TestDeriveHash(t *testing.T) {
 	assert.Equal(t, expected, actual)
 }
 
+func TestIsValidBlockchainAddress(t *testing.T) {
+	inlineData := map[string]bool{
+		"CHPvS1Hxs4oLcrbgKWYYmubSBjurjUdvjg8": true,
+		"XRPvS1Hxs4oLcrbgKWYYmubSBjurjUdvjg8": false,
+		"CHPvS1Hxs4oLcgKccYmubSBjurjUdvjg8":   false,
+		"CHPvS1Hxs4oLcrbgKccYmubSBjurjUdvjg8": false,
+	}
+
+	for address, isValid := range inlineData {
+		actual := IsValidBlockchainAddress(address)
+		assert.Equal(t, isValid, actual)
+	}
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Wallet
 ////////////////////////////////////////////////////////////////////////////////////////////////////
