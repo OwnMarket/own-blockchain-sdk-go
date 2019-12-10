@@ -37,8 +37,8 @@ func main() {
 	// Create a new wallet
 	wallet := ownSdk.GenerateWallet()
 
-	// Compose a transaction with nonce = 1 and actionFee = 0.01
-	tx := ownSdk.CreateTx(wallet.Address, 1, 0.01, 0)
+	// Compose a transaction with nonce = 1 and actionFee = 0.1
+	tx := ownSdk.CreateTx(wallet.Address, 1, 0.1, 0)
 	tx.AddTransferChxAction("CHxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 100) // Transfer 100 CHX to CHxxx... address.
 
 	// Look at the raw transaction in JSON format
